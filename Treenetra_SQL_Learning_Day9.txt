@@ -1,0 +1,162 @@
+                                                     SubQueries..
+                                                     -----------
+
+A subquery is a query within a query. subqueries can reside in the WHERE clause, the FROM clause, 
+or the SELECT clause.
+
+WHERE clause
+These subqueries are also called nested subqueries.
+
+For example:
+
+SELECT * 
+FROM all_tables tabs
+WHERE tabs.table_name IN (SELECT cols.table_name
+                          FROM all_tab_columns cols
+                          WHERE cols.column_name = 'SUPPLIER_ID');
+
+FROM clause
+A subquery can also be found in the FROM clause. These are called inline views.
+
+For example:
+
+SELECT * 
+  FROM ( SELECT deptno, count(*) emp_count
+         FROM emp
+         GROUP BY deptno ) em,
+       dept
+ WHERE dept.deptno = em.deptno;
+
+SELECT clause
+A subquery can also be found in the SELECT clause.
+
+For example:
+
+SELECT tbls.owner, tbls.table_name,
+  (SELECT COUNT(column_name) AS total_columns
+   FROM all_tab_columns cols
+   WHERE cols.owner = tbls.owner
+   AND cols.table_name = tbls.table_name) subquery2
+FROM all_tables tbls where -----;
+
+
+Advantages of subqueries
+-Provide an alternative way to query data that would require complex joins and unions.
+-Make the complex queries more readable.
+-Allow a complex query to be structured in a way that it is possible to isolate each part.
+
+Q-----What are types of sub-queries?
+
+All relational data base having two types of sub querys:
+	Non- Correlated sub querys or Subquery
+	Correlated sub querys
+
+
+Non- Correlated sub querys-->
+--------------------------
+
+In Non-correlated sub querys “child” query is executed first then only “parent” query is executed, 
+whereas in correlated sub querys “parent” query is executed first then only “child” query is executed.
+
+--Single-row subquery, where the subquery returns only one row. So here child query returns single value. 
+----------------------
+SELECT first_name, salary, department_id
+FROM employees
+WHERE salary = (SELECT MIN (salary) 
+		FROM employees); 
+		
+--Multiple-row subquery- Where the subquery returns multiple rows. 
+------------------------ So Whenever child query returns multiple values those types of sub querys are called Multiple row Sub Querys.
+						 In multiple row sub querys we are using in, all, any operators.
+						
+NOTE: In all database systems we can also use "in" operator in single row sub querys.						
+
+SELECT	first_name, department_id
+FROM employees
+WHERE department_id IN (SELECT department_id
+                   	    FROM departments
+                   	    WHERE LOCATION_ID = 100);
+
+
+--Multiple column subquery, where the subquery returns multiple columns.
+--------------------------
+In database we can also compare multiple columns of the child query with the multiple columns of the parent query. 
+These type of querys are also called as “Multiple Column Sub Querys”.
+
+SELECT first_name, job_id, salary
+FROM emp_history
+WHERE (salary, department_id) in (SELECT salary, department_id
+				  FROM employees
+ 				  WHERE salary BETWEEN 1000 and 2000 
+				  AND department_id BETWEEN 10 and 20)
+ORDER BY first_name;
+
+Write a query to display the employees who are getting maximum salary in each department from emp table using multiple column sub query?
+Ans: SQL> select deptno, sal, ename from emp where(deptno, sal) in (select deptno, max(sal) from emp group by deptno);
+
+Corelated Subquery --> 
+--------------------
+Where the inner query depends on values provided by the outer query.
+
+In Non-Correlated sub querys child query is executed first then only parent query is executed. 
+Where as in correlated sub querys parent query is executed first then only child query is executed.
+	
+Generally, correlated sub query are used in denormalization process. 
+Generally, if you want to modify one table column values based on another table and
+also those tables are related then only we are using “ Correlated update”.
+
+Write a query to display the employees who are getting more salary than the average salaries of their job from emp using correleated sub query?
+Ans: SQL> select * from emp e where sal> (select avg(sal) from emp where job=e.job);
+
+Write a query to display first highest salary of employee from emp table using correlated sub query?
+Ans: SQL> select * from emp e1 where 1 =(select count(*) from emp e2 where e1.sal>=e2.sal);
+
+Write a query to display second highest salary employee from following table using correlated sub query?
+select * from test e1 where 2=(select count(*) from test e2 where e2.sal>=e1.sal);
+
+
+Exists Operator:
+----------------
+--Exists operator used in “Correlated sub querys”. Exists Operator performance is very high. 
+--Compare to “in” operator, Exists operator always returns “Boolean Values” either “true” or “false”. 
+--Exists Operator is used in “where” condition of the “Parent Query” only.
+--In all database systems if we want to test whether one table values are availabe or 
+not availabe in same table or another table columns then only we are using “Exists Operator”.
+
+Write a query to display those departments from dept table having employees in emp table using correlated sub query exists operator?
+Ans: SQL> select * from dept d where exists(select * from emp where deptno=d.deptno);
+
+Write a query to display the employees who are getting same salary as scott salary from emp table using correlated sub query exists operator from emp?
+Ans: SQL> select * from emp e1 where exists(select * from emp e2 where ename='SCOTT' and e2.sal=e1.sal);
+		
+Write a query to display those departments from dept table doesn?t have employees in emp table using correlated sub query?
+Ans: SQL> select * from dept d where not exists(select * from emp where deptno=d.deptno);
+		
+
+WITH Clause or Sub-Query Factoring:
+-----------------------------------
+With Clause is similar to temporary tables, where you store the data once and read it multiple times in your sql query. 
+With Clause is used when a sub-query is executed multiple times.  
+You can improve the performance of the query by using with clause. 
+
+We cannot perform any DML operation in WITH clause but its possible in GTT.
+
+WITH CNT_DEPT AS
+(
+SELECT DEPARTMENT_ID,
+ COUNT(1) NUM_EMP
+FROM EMPLOYEES
+GROUP BY DEPARTMENT_ID
+)
+SELECT EMPLOYEE_ID,
+ SALARY/NUM_EMP
+FROM EMPLOYEES E,
+ CNT_DEPT C
+WHERE E.DEPARTMENT_ID = C.DEPARTMENT_ID;
+
+
+
+
+
+
+

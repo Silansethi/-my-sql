@@ -1,0 +1,22 @@
+Day1 -  Dattype and DDL
+Day2 -  DML
+Day3 -  Clause, Alias and Operators
+Day4 -  Functions( DUAL TABLE, SR - Number Function, SR - Character function )
+Day5 -  Functions( SR - Character function, SR - Date Function )
+Day6 -  Functions( Group Functions or Aggregiate Functions)
+Day7 -  JOINS
+Day8 -  SET Operators
+Day9 -  Functions( SR - Conversion Function(Implicit, Explict - Decode, Case, to_number(), to_char(), to_date()))
+Day10 - SUBQUERIES ( Noncorelated - SingleRow, Multirow, Multicolumn)
+Day11 - SUBQUERIES ( Functions - Analytical Function )  
+Day12.1 - Rowid, Rownum, Hierarchical Querys
+Day12.2 - Corelated Subquery, Exists Operator, WITH clause or Subquery Factoring
+Day14 - CONSTRAINTS
+Day15 - Index, Views
+Day16 - Views
+Day17 - Sequence
+Day18 - DCL and TCL
+
+
+
+

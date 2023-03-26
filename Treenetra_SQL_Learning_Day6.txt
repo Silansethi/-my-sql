@@ -1,0 +1,94 @@
+Group Functions or Aggregiate Functions
+----------------------------------------------------
+
+Database having following group function
+	max()
+	min()
+	avg()
+	sum()
+	count(*)
+	count(column name)
+
+1. Max(): It returns maximum value within a column.
+Eg: SQL> select max(sal) from emp;
+
+SQL> select max(hiredate) from emp;
+
+SQL> select max(ename) from emp;
+
+2. Min(): 
+Eg: SQL> select min(sal) from emp;
+750
+To know the senior most employee
+SQL> select min(hiredate) from emp;
+17-DEC-80
+
+In all database systems we are not allowed to use group functions in “where” clause. 
+SQL> select * from emp where sal= min(sal);
+Error: group function is not allowed in “where”
+
+3. Avg(): It returns average from number data type column.
+Eg: SQL> select avg(sal) from emp;
+2473.21429
+SQL> select avg(comm) from emp;
+550
+NOTE: In all database systems by default all group function ignores null values except “count(*)”.
+
+To count all null values also:
+SQL> select avg(nvl(comm,0)) from emp;
+157.142857
+
+4. Sum(): It returns total from number data type column.
+Eg: SQL> select sum(sal) from emp;
+34625
+
+5. Count(*): It counts number of rows in a table(including null values) 
+Eg: SQL> select count(*) from emp;
+
+6. Count(column name): It counts the number of not null values within a column. 
+SQL> select count(comm) from emp;
+SQL> select count(distinct(dept no)) from emp;
+
+Note: count(column) is better performance than count(*)
+
+GROUP BY: 
+--------
+This clause is used to divide similar data items into set of logical groups.
+
+select deptno,count(*) from emp group by deptno;
+select job, count(*) from emp group by job;
+
+Note: In all database systems we can also use “group by” clauses without using “group” functions.
+Eg: SQL> select deptno from emp group by deptno;
+
+
+In all databse systems after “group by” clause we are not allowed to use “where” clause.
+Generally if we want to restrict groups after “group by” then we must use “having” clause. 
+Generally in “where” clause we are not allowed to use group functions where as in having clause we can also use group functions. 
+
+SQL> select deptno,count(*) from emp group by deptno where count(*)>3;
+Error: SQL commond not properly ended.
+Solution: SQL> select deptno, coutn(*) from emp group by deptno having count(*)>3;
+
+
+--WHERE is used to filter records before any groupings take place.
+--HAVING is used to filter values after they have  been groups.  
+
+
+Note: In all database systems we are not allowed to use group functions in where clause but 
+we are allowed to use number functions, character functions, date functions in where clause. 
+
+Eg: select * from emp where sal=max(sal);
+Error: group function is not allowed here.
+
+but Q) write a query to display the employee whose employees length is 5 from emp table. 
+Ans: SQL> select * from emp where length(ename)=5; ----->Allowed here.
+
+Order	Clause	    Function
+1	    FROM	    Tables are joined to get the base data.
+2	    WHERE	    The base data is filtered.
+3	    GROUP BY	The filtered base data is grouped.
+4	    HAVING	    The grouped base data is filtered.
+5	    SELECT	    The final data is returned.
+6	    ORDER BY	The final data is sorted.
+   

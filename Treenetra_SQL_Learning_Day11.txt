@@ -1,0 +1,138 @@
+ROWID:
+------
+Rowid is an pseudo column, it behaves like a table column whenever we are inserting data into table then 
+datrabase automatically generates an unique identification number for identifying a record uniquely. This is called “ROWID”. 
+Generally, using rowids we can retrieve data very quickly from database.
+
+ROWID is a 16-digit Hexadecimal number in the format BBBBBBBB.RRRR.FFFF. Here B is Block, R is Row, and F is File.
+
+--Generally, rownum having temporary values where as rowid having fixed values. 
+
+--In database, by default rowids are ascending order.
+
+Write a query to display second record from emp table using analytical function, rowid? 
+Ans: select * from(select deptno, ename, sal, row_number() over(order by rowid)r from emp) where r=2;
+
+Write a query to display each department second row from emp table using analytical function, rowid?
+Ans: SQL> select * from(select deptno, ename, sal, row_number() over (partition by deptno order by rowid) r from emp where r=2);
+
+Write a query to display last two records from emp table using analytical function, rowid?
+Ans: SQL> select * from(select deptno, ename, sal, row_number() over (order by rowid desc) r from emp)where r<=2;
+
+--We can also use max(), min() functions in “rowid's”.
+
+Eg: SQL> select max(rowid) from emp;
+SQL> select max(rowid) from emp;
+
+Q) Write a query to display first row from emp table using rowid?
+Ans: SQL> select * from emp where rowid=(select min(rowid) from emp);
+
+Q) Write a query to display last record from emp table using rowid?
+Ans: SQL> select * from emp where rowid=(select max(rowid) from emp);
+
+--Generally, rowids are used in subquerys for deleting duplicate rows in a table. 
+
+Write a query to delete duplicate rows except one row in each group from a table using rowid?
+Ans: delete from test where rowid not in(select min(rowid) from test group by sno); 
+
+ROWNUM (Magic Column)?
+----------------------
+Rownum is an Psuedo column(generalised column) it behaves like a table column. 
+Whenever we are installing oracle server then automatically some psuedo columns are created in database. 
+These “Pseudo Columns” belongs to all tables within database. Rownum psuedo column is used to filter the data within a table.
+Rownum is a psuedo column which automatically assigns numbers to each row in a table at the time of selection.
+Oracle ROWNUM is a pseudocolumn that assigns a number to each row returned by a query. 
+It’s assigned before an ORDER BY is performed, so you shouldn’t order by the ROWNUM value.
+
+But it will work if you enclose the order by in subquery. 
+For Ex:
+SELECT ROWNUM, first_name, last_name, address_state
+FROM (
+  SELECT first_name, last_name, address_state
+  FROM student
+  ORDER BY last_name
+) sub
+WHERE ROWNUM <= 5;
+
+
+SQL> select rownum, ename from emp;
+
+ROWNUM	ENAME
+-------------
+1	    SMITH
+2	    ALLEN
+3	    WARD
+Generally, rownum having temporarily values.
+
+Write a query to display first row from emp table using rownum? 
+Ans: SQL> select * from emp where rownum=1;
+
+Write a query to display second row from emp table using rownum? 
+Ans: SQL> select * from emp where rownum=2;
+No rows selected
+
+Generally, rownum doesn't work with more than “1” +ve integer, i.e it works with <, <= operators.
+
+Write a query to display first five rows from emp table using rownum? 
+Ans: SQL> select * from emp where rownum<=5;
+
+Write a query to display first five highest salary of employees from emp using rownum? 
+Ans: SQL> select * from( select * from emp order by sal desc) where rownum<=5;
+
+Write a query to display 5th highest salary employee from emp table using rownum? 
+Ans: SQL> select * from(select * from emp order by sal desc) where rownum <= 5 
+minus
+select * from(select * from emp order by sal desc) where rownum<=4;
+
+Write a query to display rows between 1 to 5 from emp table using “Rownum”?
+Ans: SQL> select * from emp where rownum between 1 and 5;
+
+Write a query to display rows between to 5 to 10 from table? 
+Ans: SQL> select * from emp where rownum between 5 and 10; No rows selected
+
+Solution: SQL> select * from emp where rownum <=10 minus
+select * from emp where rownum<=5;
+
+SQL> select * from emp where rownum>1; 
+No rows selected
+
+SQL> select * from emp where rownum>=1; 
+No Rows selected
+
+NOTE: Whenever we are using alias name for rownum in “INLINE VIEWS” then that alias name works with all SQL operators because 
+that alias name behaves like a table column.
+
+Write a query to display second record from emp table using “rownum” alias name?
+Ans: SQL> select * from(select rownum r, ename, job, sal from emp) where r=2;
+
+If we want to display all the columns from the table using rownum.
+SQL> select * from( select rownum r, emp.* from emp) where r=2;
+OR
+SQL> select * from(select rownum r, e.* from emp e) where r=2;
+
+Write a query to display second, third, fifth, seventh, eighth rows from emp table using rownum alias name?
+Ans: SQL> select * from (select rownum r, e.* from emp e) where r in(2,3,5,7,8);
+
+Write a query to display records from 5 to 9 from emp table using rownum alias name? 
+Ans: SQL> select * from(select rownum r, emp.* from emp) where r between 5 and 9;
+
+Write a query to display first and last records from emp table using rownum alias name?
+Ans: SQL> select * from(select rownum r, emp.* from emp) where r=1 or r=(select count(*) from emp);
+
+Write a query to display even number of records from emp table using rownum alias name?
+Ans: SQL> select * from(select rownum r, emp.* from emp) where r in(select mod(r,2)=0 from emp);
+Solution: SQL> select * from(select rownum r, emp.* from emp) where mod(r,2)=0;
+
+Write a query to display skip first 5 rows from emp table using rownum alias name? 
+Ans: SQL> select * from (select rownum r, emp.* from emp) where r>5;
+
+16-----what is Difference B/w Rowid And Rownum?
+
+ROWNUM is temporary while ROWID is permanent unique identifier for a row.
+
+Q-----Difference between Rownum and Row_Number()
+
+ROWNUM is a pseudocolumn and has no parameters. ROW_NUMBER is an analytical function which takes parameters.
+ROWNUM is calculated on all results but before the ORDER BY. ROW_NUMBER is calculated as part of the column calculation.
+ROWNUM is unique. ROW_NUMBER can contain duplicates.
+						

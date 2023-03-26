@@ -1,0 +1,55 @@
+SET OPERATORS
+--------------
+Set operators are used to retrieve data from single (or) multiple tables. 
+These operators are also called as “Vertical Joins”.
+	Union -> It returns unique values and also automatically sorting data.
+	Union all -> It returns unique + duplicate data. (no automatic sorting)
+	Intersect -> It returns common values
+	Minus -> Values are in first query those values are not in second query.
+	
+	
+Eg:
+SQL> select job from emp where deptno=10
+union
+select job from emp where deptno=20;
+
+NOTE: Whenever we are using set operators, corresponding expressions must belongs to same data type.
+
+Eg:
+SQL> select deptno from emp
+union
+select dname from dept;
+Error: expression must have same data type as corresponding expression
+
+Eg:
+SQL> select job from emp where deptno=10
+union all
+select job from emp where deptno=20;
+
+Q-----What is difference between union and union all? 
+
+UNION performs a DISTINCT on the result set, eliminating any duplicate rows.
+UNION ALL does not remove duplicates, and it therefore faster than UNION.
+If you know that all the records returned are unique from your union, 
+use UNION ALL instead, it gives faster results.
+
+A UNION places a result set on top another, meaning that it appends result sets vertically. 
+However, a join such as INNER JOIN or LEFT JOIN combines result sets horizontally.
+
+UNION removes duplicate and also does sorting operation while union all doesnot.
+
+select 1 from dual 
+union all
+select '1' from dual
+will throw error because the datatype should match here.	
+
+Intersect -> It returns common values
+select * from tableA
+intersect
+select * from tableB
+
+
+Minus -> Values are in first query those values are not in second query.
+select * from tableA
+minus
+select * from tableB;

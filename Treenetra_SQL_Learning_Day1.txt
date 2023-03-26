@@ -1,0 +1,204 @@
+DATA STORE: 
+1) Books & Papers
+2) Flat files
+3) Database
+
+RDBMS (RELATIONAL DATABASE MANAGEMENT SYSTEM):
+It is a collection of programs written to manage database.
+Example: ORACLE, FOXPRO, DB2, TERADATA, SQLSERVER, SYBASE, MYSQL, INGRESS, INFORMIX, SQLLITE…… etc;
+
+ORACLE is a Relational Database product which is used to store data.
+
+There are mainly two different types of database language is ORACLE. They are:
+1) SQL (STRUCTURED QUERY LANGUAGE)
+2) PL/SQL (PROCEDURAL LANGUAGE and Extension of SQL)
+
+SQL Sub Languages in every database:
+
+1) Data Definition Language (DDL):
+ Create
+ Alter
+ Drop
+ Truncate
+ Rename
+
+2) Data Manipulation Language (DML):
+ Insert
+ update
+ delete
+ merge
+
+3) Data Retrieval Language(DRL) or Data Query Language(DQL):
+ SELECT
+
+4) Transactional Control Language (TCL):
+ Commit
+ Rollback
+ Savepoint
+
+5) Data Control Language(DCL):
+ Grant
+ Revoke
+
+1.DATA DEFINITION LANGUAGE (DDL) :
+-----
+CREATE
+--------
+create table tablename(columatype(size), columnname2 datatype(size)….. );
+create table first(sno number(10), name varchar2(10));
+desc first;
+
+Data Types: Data types specifies type of data within a table column.
+
+1. Number(p,s)
+2. Char, varchar2
+3. Date
+
+1) Number(p,s):
+
+-- precision(1 to 38)  scale(-84 to +126).
+-- precision means total number of digits in the decimal part.
+-- scale means total number digits after the decimal part.
+-- characters allows 0-9, ., - and +
+
+Precision 5, scale 1 : 5432.2
+Precision 5, scale 0 : 54321
+Precision 5, scale -2: 54300
+
+p- precision (total number of digits)
+s- scale ( it is used to store fixed, floating point numbers).
+Syntax: columnname number(p,s)
+Example: SQL> create table test(sno number(7,2));
+SQL> insert into test values (12345.67);
+SQL> select * from test;
+Sno
+---------
+12345.67
+SQL> insert into test values(123456.7)
+Error: value larger than specified precision allows for this column.
+Note: whenever we are using number(p,s) then total number of digits before decimal places upto “p-s” number of digits.
+[eg:- p-s => 7-2=5]
+
+After Decimal:
+SQL> insert into test values(12345.6789);
+SQL> select * from test;
+Sno
+-------------
+12345.68
+SQL> insert into test values(12345.6725);
+SQL> select * from test;
+Sno
+------------
+12345.67
+
+Note: whenever we are using number(p,s) and also if we are passing more number of digits after decimal place then oracle server only automatically rounded that number based on
+specified “scale”.
+Number(p): It is used to store fixed numbers only. Maximum length of the precision is up to “38”.
+Example: SQL> create table test1(sno number(7));
+SQL> insert into test1 values(99.9);
+SQL> select * from test1;
+Sno
+-------
+100
+SQL> insert into test1 values(99.4);
+SQL> select * from test1;
+Sno
+-----------
+99
+
+2) Char: It is used to store fixed length “alpha numeric” data in bytes. Maximum limit is upto 2000 bytes.
+Syntax: columnname char (size);
+By default character data type having one byte. Character data type automatically “Blank Padded”.
+Blank Padded: Whenever we are passing less number of characters than the specified data type size then oracle server automatically allocates blank spaces after the value.
+
+Varchar2(maxsize): It is used to store variable length alphanumeric data in bytes.
+Maximum limit is upto 4,000 bytes. Whenever we are using varchar2() data type oracle server not blank padded. After the value passed into that column.
+Syntax: columnname varchar2(maxsize);
+
+3) Date: It is used to store dates in oracle date format.
+Syntax: columnname date;
+In oracle by default date format is
+DD-MON-YY
+Date: 9/3/15
+
+
+--Creating a new table from another table:
+Syntax: create table newtablename as select * from existingtablename;
+Example: SQL> create table test as select * from emp;
+
+--Creating a new table from existing table without copying data:
+Syntax: create table newtablename as select * from existingtablename where falsecondition;
+Example: create table test1 as select * from emp where 1=2;
+select * from test1;
+No rows selected.
+desc test1;
+
+ALTER
+--------
+
+It is used to change structure of the existing table.
+
+Add: It is used to add number of columns into the existing table.
+Syntax: Alter table tablename add(col1 datatype(size));
+Example: SQL> alter table first add sal number(10);
+SQL> desc table;
+
+Modify: It is used to change column datatype or column datatype size only.
+Syntax: alter table tablename modify(col datatype(size), col2 datatype(size));
+Example: SQL> alter table first modify sno date;
+
+Drop: It is used to remove columns from the existing table.
+
+Method1: If we want to drop a single column at a time without using parenthesis”()” then
+we are using following syntax:
+Alter table tablename drop column columnname;
+Example: SQL> alter table first drop column sal;
+SQL> desc first;
+
+Method2: If we want to drop single or multiple columns with using parenthesis then we are
+using following syntax.
+Syntax: alter table tablename drop(colname1, colname2, colname3….);
+Example: SQL> alter table first drop(sal,age);
+
+DROP:
+--------
+
+It is used to remove database objects from database.
+Syntax: drop objecttype objectname;
+1. Drop table tablename;
+2. Drop view viewname;
+
+Syntax: drop table tablename;
+
+
+Truncate: 
+--------
+Total data permanently deleted from table.
+
+Syntax: truncate table tablename;
+Example: create table first as select * from emp;
+SQL> select * from first;
+SQL> truncate table first;
+Testing: SQL> select * from first;
+No rows selected.
+SQL> desc first;
+
+Rename:
+--------
+It is used to rename a table and renaming a column also.
+
+Renaming a Table:
+Syntax: rename oldtablename to new tablename;
+Example: rename first to last;
+
+Renaming a Column: 
+Syntax: alter table tablename rename column oldcolumnname to newcolumnname;
+Example: SQL> alter table emp rename column empno to sno;
+SQL> select * from emp;
+
+Note: In all database systems by default all DDL commands are automatically committed.
+
+Note: We can get all the Table and Column details in user_objects and user_tab_columns
+
+
+

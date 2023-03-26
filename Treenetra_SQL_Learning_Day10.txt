@@ -1,0 +1,106 @@
+ANALYTICAL FUNCTIONS are used in INLINE VIEWS.
+
+Analytic functions operate on subsets of rows, similar to aggregate functions in GROUP BY queries, 
+but they do not reduce the number of rows returned by the query.
+
+Analytical functions response time is less campare to group by or aggregate functions. 
+count is common for anlytical and group by function.
+
+1) RANK--------- Gaps created between the rank values are skipped.
+Rank()-This function will assign a unique number to each distinct row, but it leaves a gap between the groups.
+Col_Value RowID
+A	1
+A	1
+A	1
+B	4
+B	4
+
+2) DENSE_RANK--- It does not skip the ranks.
+Dense_Rank()-This function is similar to Rank with only difference, this will not leave gaps between groups.
+Col_Value RowID
+A	1
+A	1
+A	1
+B	2
+B	2
+
+3) ROW_NUMBER----
+Row_Number()-This function will assign a unique id to each row returned from the query.
+It assigns a number to each row, depending on the parameters to the function, which define the ordering within a group of rows.
+Col_Value RowID
+A	1
+A	2
+A	3
+B	4
+B	5
+
+4) COUNT---no of records.
+
+Write a query to display 5th highest salary employee from emp table using analytical function?
+Ans: SQL> select * from(select deptno, ename, sal, dense_rank() over(order by sal desc)r from emp) where r=5;
+
+NOTE: In analytical functions “Partition By” clause is an optional clause.
+
+PARTITION BY keyword in Oracle SQL / PLSQL is used to partition or segregate the records based on groups.
+COUNT(*) - get the number of items
+OVER - Over the set of rows (PARTITION BY Coloumn_Name) - that have the same coloumn name
+
+
+Example
+----------
+ select deptno, sal, dense_rank() over(partition by deptno order by sal desc) dense_rank, rank() over(partition by deptno order by sal desc) rank,
+ row_number()over(partition by deptno order by sal desc) row_number, count(*) over(partition by deptno order by sal desc )conunt from emp;
+
+    DEPTNO        SAL DENSE_RANK       RANK ROW_NUMBER      COUNT
+---------- ---------- ---------- ---------- ---------- ----------
+        10       5000          1          1          1          3
+        10       2450          2          2          2          2
+        10       1300          3          3          3          1
+        20       3000          1          1          1          5
+        20       3000          1          1          2          5
+        20       2975          2          3          3          3
+        20       1100          3          4          4          2
+        20        800          4          5          5          1
+        30       2850          1          1          1          6
+        30       1600          2          2          2          5
+        30       1500          3          3          3          4
+        30       1250          4          4          4          3
+        30       1250          4          4          5          3
+        30        950          5          6          6          1
+                               1          1          1          2
+                               1          1          2          2
+							   
+							   
+Lead/ Lag:
+---------
+Lead gives immediate fist value and lag gives immediate last value.
+select empno, ename, sal, lead(sal, 1, 0) over(order by sal)next_val, lag(sal, 1, 0) over(order by sal)prev_value from emp;
+     EMPNO ENAME             SAL   NEXT_VAL PREV_VALUE
+---------- ---------- ---------- ---------- ----------
+      7369 SMITH             800        950          0
+      7900 JAMES             950       1100        800
+      7876 ADAMS            1100       1250        950
+      7654 MARTIN           1250       1250       1100
+      7521 WARD             1250       1300       1250
+      7934 MILLER           1300       1500       1250
+      7844 TURNER           1500       1600       1300
+      7499 ALLEN            1600       2450       1500
+      7782 CLARK            2450       2850       1600
+      7698 BLAKE            2850       2975       2450
+      7566 JONES            2975       3000       2850
+      7902 FORD             3000       3000       2975
+      7788 SCOTT            3000       5000       3000
+      7839 KING             5000                  3000
+        10 a                                      5000
+         1 a                              0           	
+
+
+LISTAGG
+-------
+LISTAGG operates on all rows and returns a single output row.
+
+select listagg(empsal, ',') within group (order by empsal) from tcs order by empsal asc;
+
+
+
+		 

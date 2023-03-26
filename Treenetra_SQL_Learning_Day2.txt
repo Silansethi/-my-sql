@@ -1,0 +1,104 @@
+2.  DATA MANIPULATION LANGUAGE (DML): 
+
+Insert  
+Update  
+Delete  
+Merge
+
+1) Insert: It is used to insert data into a table.
+
+Method1: Insert into tablename values(value1, value2, value3…..);
+
+Inserting data into table:
+insert into first values(1, 'abc');
+insert into first values(2, 'sachin');
+
+SQL> select * from first;
+Sno name
+----------- -------------
+1 abc
+2 sachin
+
+Method2: (skipping columns)
+
+Syntax: insert into tablename(columnname1, columnname2,…..)values(value1,value2,…);
+Example: SQL> insert into first(name)values('www');
+SQL>select * from first;
+
+Method3 : Inserting multiple records using a SELECT statement:
+
+Syntax: INSERT INTO table  (column1, column2, ... column_n )  SELECT expression1, expression2, ... expression_n  FROM source_table  WHERE conditions; 
+
+Method4 :
+
+INSERT ALL  
+  INTO suppliers (supplier_id, supplier_name) VALUES (20, 'Google')  
+  INTO suppliers (supplier_id, supplier_name) VALUES (21, 'Microsoft')  
+  INTO suppliers (supplier_id, supplier_name) VALUES (22, 'Apple')  
+SELECT * FROM dual;  
+
+2) Update: It is used to change data within a table.
+
+Syntax: update tablename set columnname=newvalue where columnname=oldvalue;
+
+Example: SQL> update emp set sal=1000 where ename=‟SMITH‟;
+SQL> select * from first;
+
+Example: SQL> update first set address=null where name=‟sachin‟;
+SQL> select * from first;
+
+3) Delete: It is used to delete particular rows or all rows from a table;
+
+Syntax:
+--Delete from tablename; -- delete all rows
+--Delete from tablename where condition; -- delete particular rows.
+
+Example: SQL> delete from first;
+Rows deleted.
+SQL> rollback;
+SQL> select * from first;
+
+Q- Difference between "delete" and "truncate":
+
+4) Merge 
+
+Use the MERGE statement to select rows from one or more sources for update or insertion into a table or view.
+It lets you avoid multiple INSERT, UPDATE, and DELETE DML statements.
+
+MERGE INTO TargetTable
+USING SourceTable
+ON Condition
+WHEN MATCHED THEN
+UPDATE SET col_1 = value_1, col_2 = value_2...col_n = value_n
+WHERE <UpdateCondition>
+[DELETE WHERE <DeleteCondition>] 
+WHEN NOT MATCHED THEN
+INSERT (col_1,col_2...col_n)
+Values(value_1,value_2...value_n)
+WHERE <InsertCondition>;
+
+select * from catalog1
+ 
+ID	ITEM	PRICE
+1	laptop	800
+2	iphone	500
+3	camera	700
+
+select * from catalog2
+ 
+ID	ITEM	PRICE
+1	laptop	899
+2	iphone	599
+5	android	799
+
+MERGE INTO catalog1 s1 USING catalog2 s2 ON (s1.id = s2.id) 
+WHEN MATCHED THEN UPDATE SET s1.price = s2.price  
+WHEN NOT MATCHED THEN INSERT (id, item, price) values (s2.id, s2.item, s2.price)
+
+select * from catalog1
+ 
+ID	ITEM	PRICE
+1	laptop	899
+2	iphone	599
+3	camera	700
+5	android	799

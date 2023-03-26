@@ -1,0 +1,100 @@
+Joins
+-----
+
+https://www.techmixing.com/2019/04/sql-joins-tricky-interview-questions.html
+
+1.      EQUI JOIN or INNER JOIN 
+--This join should be based on common coloumns with same datatype and contains an equal to ‘=’ operator in the joins condition.
+--This is the default type of join in the Query and View Designer.
+Ex:
+Where Clause
+SQL> select empno,ename,job,dname,loc from emp e,dept d where e.deptno=d.deptno;
+Using clause
+SQL> select empno,ename,job ,dname,loc from emp e join dept d using(deptno);
+On clause
+SQL> select empno,ename,job,dname,loc from emp e join dept d on(e.deptid=d.deptno);
+
+Q:-Write a query to display dname, sum(sal) from emp, dept tables using equi join? 
+SQL> select d.dname,sum(e.sal) from emp e,dept d where d.deptno=e.deptno group by d.dname;
+
+DNAME          SUM(E.SAL)
+-------------- ----------
+ACCOUNTING           8750
+RESEARCH            10875
+SALES                9400
+
+2.      NON-EQUI JOIN
+ A join which contains an operator other than equal to ‘=’(<,>,<>,!<,!>,!=,between) in the joins condition.
+ex:- 
+=====
+SQL> select empno,ename,job,dname,loc from emp e,dept d where e.deptno > d.deptno;
+ex
+=====
+select e.*,d.* from emp e,dept d where e.deptno!=d.deptno;
+ex:-
+=====
+SQL>  select ename,sal,losal,hisal from emp,salgrade where sal between losal and hisal;
+
+
+3.      OUTER JOIN
+Outer join gives the non-matching records along with matching records.
+
+--LEFT OUTER JOIN
+This will display all the matching records and the records which are in left hand side table those that are not in right hand side table.
+
+Ex:
+SQL> select empno,ename,job,dname,loc from emp e left outer join dept d on(e.deptno=d.deptno);
+Or
+SQL> select empno,ename,job,dname,loc from emp e,dept d where e.deptno=d.deptno(+);
+
+--RIGHT OUTER JOIN
+This will display all the matching records and the records which are in right hand side table those that are not in left hand side table.
+
+Ex:
+SQL> select empno,ename,job,dname,loc from emp e right outer join dept d on(e.deptno=d.deptno);
+Or
+SQL> select empno,ename,job,dname,loc from emp e,dept d where e.deptno(+) = d.deptno;
+
+--FULL OUTER JOIN
+This will display the all matching records and the non-matching records from both tables.
+Ex:
+SQL> select empno,ename,job,dname,loc from emp e full outer join dept d on(e.deptno=d.deptno);
+
+
+4.      SELF JOIN
+Joining the table itself is called self join.
+
+This is a particular case when one table joins to itself, with one or two aliases to avoid confusion. 
+A self join can be of any type, as long as the joined tables are the same. 
+
+The common example is when company has a hierarchal reporting structure whereby one member of staff reports to another. 
+
+Ex: 
+SQL> select e1.empno,e2.ename,e1.job,e2.deptno from emp e1,emp e2 where e1.empno=e2.mgr;
+
+
+5.      NATURAL JOIN
+
+Natural join compares all the common columns.
+The join is based on all the columns in the two tables that have the same name and data types.
+The join creates, by using the NATURAL JOIN keywords.
+It selects rows from the two tables that have equal values in all matched columns.
+When specifying columns that are involved in the natural join, do not qualify the column name with a table name or table alias.
+It removes duplicate columns from the result, as opposed to all other joins;
+Ex:
+SQL> select empno,ename,job,dname,loc from emp natural join dept;
+
+Note: In this case oracle server internally uses joining condition. Natural Join performance is very high compared to inner join.
+This join internally uses “USING” clause. That?s why this join also returns common columns one time only.
+Note: When we are using “Natural” join, then we are not allowed to use alias name on joining conditional column because 
+natural join internally uses “USING” clause.
+
+
+
+6.      CROSS JOIN OR CARTESIAN JOIN
+This will gives the cross product.
+A cross join that does not have a WHERE clause produces the Cartesian product of the tables involved in the join. 
+The size of a Cartesian product result set is the number of rows in the first table multiplied by the number of rows in the second table. 
+The common example is when company wants to combine each product with a pricing table to analyze each product at each price.
+Ex:
+SQL> select empno,ename,job,dname,loc from emp cross join dept;

@@ -1,0 +1,504 @@
+Functions are used to solve particular task and also functions must return a value. 
+Oracle have two types of functions. 1. Predefined functions 2. User defined functions (PL/SQL)
+
+1) Predefined functions: there are 3 types. 
+>Single Row Function
+        > Number function 
+        > Character function 
+        > Date function 
+		> Conversion Function
+> Group function(or) Aggregate function 
+> Analytical Function
+
+>Number function
+----------------
+
+Dual(): Dual is a predefined virtual table which contains only one row and one column Dual table is used to test predefined, 
+          user defined functions functionality.
+
+Note: In oracle by default dual table column datatype is varchar2().
+
+--Abs() : It is used to convert negative values into positive values.
+Eg: SQL> select abs(-50) from dual; 
+50
+
+--MOD(m,n) - Returns the remainder of n2 divided by n1. Returns n2 if n1 is 0.		
+Eg:SELECT MOD(11,4) "Modulus" FROM DUAL;
+Modulus
+-------
+3
+
+--Round(m,n): It rounds given floated valued number 'm' based on 'n'. 
+Eg: SQL> select round(1.8) from dual; 
+2 
+
+SQL> select round(1.23456,3) from dual; 
+1.235 
+Note: Round always checks remaining number if remaining number is above 50% then one added to the rounded number. 
+Eg: SQL> select round(1285.456,-1) from dual; 
+1290 
+Execution: Step1: 1280->5 is replace with 0. 
+Out of 10, 5 is above 50%(>=) 
+Step2: 1280             
+        +1 
+	---------------            
+	   1290 
+Eg: select ename, sal, round(sal,-1) from emp; 
+Eg: select ename, sal, round(sal/22), round(sal/22,1), round(sal/22,2) from emp; 
+
+ROUND(125.315)
+Result: 125
+
+ROUND(125.315, 0)
+Result: 125
+
+ROUND(125.315, 1)
+Result: 125.3
+
+ROUND(125.315, 2)
+Result: 125.32
+
+ROUND(125.315, 3)
+Result: 125.315
+
+ROUND(-125.315, 2)
+Result: -125.32
+
+--Trunc(m,n): It truncates given floated values number 'm' based on 'n'. 
+This function doesn't check remaining number is above 50% or below 50%. 
+
+Eg: SQL> select trunc(1.23456,3) from dual; 
+
+1.234
+
+SELECT TRUNC(15.79,1) "Truncate" FROM DUAL;
+
+  Truncate
+----------
+      15.7
+
+SELECT TRUNC(15.79,-1) "Truncate" FROM DUAL;
+
+  Truncate
+----------
+        10
+		
+SELECT TRUNC(142.465,-2) FROM dual;
+
+TRUNC(142.465,-2)
+-----------------
+              100		
+			  
+--Greatest(exp1,exp2,…. expn), Least(exp1,exp2,…. expn):
+Greatest returns maximum value among given expressions. Where as Least returns minimum value among given expressions.
+Eg: SQL> select greatest(3,5,8,9,11) from dual ; 
+11
+Eg: SQL> select greatest(5,8,9,11) from dual ; 
+5		  
+--Ceil() and Floor(): These two functions always return integer. Ceil() returns nearest greatest integer where as floor() returns nearest lowest integer.
+Eg: select ceil(1.3) from dual; 2
+Eg: select floor(1.9) from dual; 1
+
+
+>Character Function
+-------------------
+--LOWER(string_value)	- LOWER('Good Morning')	- good morning
+--UPPER(string_value)	- UPPER('Good Morning')	- GOOD MORNING
+--INITCAP(string_value) - INITCAP('GOOD MORNING') - Good Morning
+--LENGTH (string_value)- It returns total length of the string including spaces.LENGTH ('Good Morning') - 12
+
+--Substr(): It will extract portion of the string within given string based on last two parameters.
+Eg: select substr('ABCDEF',2,3) from dual;
+BCD
+SQL> select substr('ABCDEF',-2,3) from dual;
+EF
+SQL> select substr('ABCDEF',-4) from dual;
+CDEF
+select * from emp where substr(ename,2,2)='LA';
+BLAKE 
+CLARK
+Note: In all database systems we are not allowed to use group functions in where clause but 
+we are allowed to use number functions, character functions, date functions in where clause. 
+Eg: select * from emp where sal=max(sal);
+Error: group function is not allowed here.
+
+but Q) write a query to display the employee whose employees length is 5 from emp table. 
+Ans: SQL> select * from emp where length(ename)=5; ----->Allowed here.
+
+--INSTR(): - functions search string for substring. 
+The function returns an integer indicating the position of the character in string that is the first character of this occurrence. 
+
+SELECT INSTR('CORPORATE FLOOR','OR', 3, 2)
+  "Instring" FROM DUAL;
+ 
+  Instring
+----------
+    14
+SELECT INSTR('CORPORATE FLOOR','OR', -3, 2)
+"Reversed Instring"
+     FROM DUAL;
+ 
+Reversed Instring
+-----------------
+    2
+
+--LPAD (string_value, n, pad_value) -  It will fills remaining spaces with specified character on the left side of the given string. 
+LPAD ('Good', 6, '*') - **Good 
+
+--RPAD (string_value, n, pad_value) - It will fills remaining spaces with specified character on the right side of the given string. 
+RPAD ('Good', 6, '*') -	Good**
+
+Note: If you wont provide any character by default it will take space.
+
+--LTRIM(string_value, trim_text) - LTRIM ('Good Morning', 'Good') - Morning
+SQL> select job,ltrim(job,'CSM') from emp;
+
+JOB	        LTRIM(JOB)
+--------	-------
+CLERK	    LERK
+SALESMAN	ALESMAN
+MANAGER	    ANAGER
+
+--RTRIM (string_value, trim_text)	- RTRIM ('Good Morning', ' Morning') - Good
+
+--TRIM(): It is used to remove left and right side specified characters and also it is used to remove leading and trailing spaces.
+TRIM('   tech   ')
+Result: 'tech'
+
+TRIM(' '  FROM  '   tech   ')
+Result: 'tech'
+
+TRIM(LEADING '0' FROM '000123')
+Result: '123'
+
+TRIM(TRAILING '1' FROM 'Tech1')
+Result: 'Tech'
+
+TRIM(BOTH '1' FROM '123Tech111')
+Result: '23Tech'
+
+select trim('S' from 'SSMISSTHSS')from dual; 
+MISSTH
+
+--Translate() and Replace():
+--------------------------
+Translate() is used to replaces character by character where as replace() is used to replaces character by string (or) string by string.
+Eg: select translate('india','in','xy'),replace('india','in','xy') from dual; 
+
+Translate
+Xydxa
+
+Replace
+xydia
+
+SELECT TRANSLATE('SQL*Plus User's Guide', ' */'', '_') FROM DUAL;
+
+TRANSLATE
+--------------------
+SQL_Plus_Users_Guide
+
+Syntax: translate('str1','str2','str3'….);
+Eg: select translate('ABCDEF','FEDCBA',123456); 
+654321
+Eg: select replace('ABC','','india')from dual;
+AindiaBindiaC
+Eg: select job,replace(job, 'SALESMAN','MARKETING') from emp;
+Note: In replace function if we are not specifying third parameter specified character permanently removed from the string.
+Eg: select replace('SSMISSTHSS','S') from dual; 
+MITH
+
+Q) Write a query to count number of times that particular 'I' occurred within given string 'india' using replace function? 
+Ans: SQL> select length('india')-length(replace('india','I')) from dual;         
+2
+
+--Concat(): It is used to concatenate given two strings. 
+Eg: select concat('Wel','come')from dual; 
+Welcome 
+
+>Date Functions
+---------------
+
+In oracle by default date format is DD-MON-YY.
+
+Day Information
+-----------
+D - Day of week (Starts from Sunday i.e SUN=1,MON=2.....SAT=7) - Return Numbers
+DD - Day of Month (Starts from first day of month i.e 1-31) - Return Numbers
+DDD - Day of Year (Starts from first day of year i.e 1-366 and starts from 1st January) - Return Numbers
+J - Julian Day (Number of days starts from 1st January 4712 BC) - Return Numbers
+DY - Abbreviated day name (Sunday means SUN, Monday means MON etc i.e 3 characters)
+DAY - Full Name of the day.
+dy - Lower case of DY
+day - Lower case of DAY
+Dy - Initcap of DY
+Day - Initcap of DAY
+
+For 20-02-2022(Sunday)
+select to_char(sysdate, 'D') - 1
+select to_char(sysdate, 'DD') - 20
+select to_char(sysdate, 'DDD') - 50
+select to_char(sysdate, 'J') - Some number(Will return the number of days starts from 1st Jan 4712 BC)
+select to_char(sysdate, 'DY') - SUN
+select to_char(sysdate, 'DAY') - SUNDAY
+select to_char(sysdate, 'dy') - sun
+select to_char(sysdate, 'day') - sunday
+select to_char(sysdate, 'Dy') - Sun
+select to_char(sysdate, 'Day') - Sunday
+
+Week Information
+-----------
+W - Returns week of Month(1st 4 weeks have 7 days but last week may not have 7 days) - Return Numbers
+WW - Returns week of the year(All the weeks have 7 days and except last week) - Return Numbers
+IW - ISO Weeks which Returns Week starts from Monday to Sunday always(1-53)
+
+select to_char(sysdate, 'W') - 3
+select to_char(sysdate, 'WW') - 8
+
+
+Month Information
+-----------
+MM - Return the number of month (Jan=1,Feb=2....December=12) - Return Numbers
+MON/mon/Mon - Abbreviated month name
+MONTH/month/Month - Full name of the month
+RM - Roman numeral month (Jan=I, Feb=II, Mar=III, Apr=IV.....Dec=XII)
+
+select to_char(sysdate, 'MM') - 02
+select to_char(sysdate, 'MON') - FEB
+select to_char(sysdate, 'mon') - feb
+select to_char(sysdate, 'Mon') - Feb
+select to_char(sysdate, 'MONTH') - FEBRUARY
+select to_char(sysdate, 'month') - february
+select to_char(sysdate, 'Month') - February
+select to_char(sysdate, 'RM') - II
+
+
+Year Information
+-----------
+YYYY - 4 digit of the year
+YYY - Last 3 digit of the year
+YY - Last 2 digit of the year
+Y - Last digit of the year
+YEAR - Year we spelled
+Q - Quarter in which the month falls - Number only
+CC - Century which falls
+RRRR - Will work same as YYYY
+
+select to_char(sysdate, 'YYYY') - 2022
+select to_char(sysdate, 'YYY') - 022
+select to_char(sysdate, 'YY') - 22
+select to_char(sysdate, 'Y') - 2
+select to_char(sysdate, 'YEAR') - TWENTY TWENTY TWO
+select to_char(sysdate, 'Q') - 1 (Because Feb comes under first quarter)
+select to_char(sysdate, 'CC') - 21(Because its 21st Century but for 2000 its 20)
+
+Hours,Mins and Second Information
+-----------
+HH - Hour of the day(1-12)
+HH12 - Hour of the day(1-12)
+HH24 - Hour of the day(0-23)
+MI - Minute(0-59)
+SS - Second(0-59)
+SSSSS - Seconds past midnight -- Check
+TS - Short time format - 11:17:50 PM
+DL - Long Date Format - Sunday, february 20, 2022
+DS - Short Date Format - 02/20/2022
+AM/PM - Meridian Indicator
+
+
+Round(), Trunc() used in dates: 
+------------------------------- 
+In Oracle, “date” data type contains both date and time. 
+Whenever we are using the round() or trunc() then automatically date part changed based on time portion.
+
+
+Whenever we are using trunc() oracle server automatically returns same date if time portion is greater than or equal to 12 noon also and 
+also trunc() time portion is set to “zero”(0) 
+
+Eg: SQL> select to_char(trunc(sysdate),'DD-MON-YYYY HH24:MI:SS') from dual; 
+25-MAR-2015  00:00:00 
+
+This example uses TRUNC after providing a date and time value, and truncates it to the hour.
+
+SELECT TO_CHAR(TRUNC(TO_DATE('03-FEB-2017 10:45:12 AM', 'DD-MON-YYYY HH:MI:SS AM'), 'HH'), 'DD-MON-YYYY HH:MI:SS AM')FROM dual;
+Result: 03-FEB-2017 10:00:00 AM
+
+Round() adds one day to the given date if time portion is greater than or equal to 12 noon and also time portion automatically set to “zero”.
+ 
+Eg: SQL> select to_char(sysdate,'DD-MON-YYYY HH24:MI:SS') from dual; 
+25-MAR-2015   12:24:59 
+
+When applying round(): SQL> select to_char(round(sysdate),'DD-MON-YYYY HH24:MI:SS') from dual; 
+26-MAR-2015  00:00:00 
+
+TRUNC(TO_DATE('22-AUG-03'), 'DAY')
+Result: '17-AUG-03'
+
+ROUND(TO_DATE ('22-AUG-03'),'DAY')
+Result: '24-AUG-03'
+
+TRUNC(TO_DATE('22-AUG-03'), 'MONTH')
+Result: '01-AUG-03'
+
+ROUND(TO_DATE ('22-AUG-03'),'MONTH')
+Result: '01-SEP-03'
+
+TRUNC(TO_DATE('22-AUG-03'), 'Q')
+Result: '01-JUL-03'
+
+ROUND(TO_DATE ('22-AUG-03'),'Q')
+Result: '01-OCT-03'
+
+TRUNC(TO_DATE('22-AUG-03'), 'YEAR')
+Result: '01-JAN-03'
+
+ROUND(TO_DATE ('22-AUG-03'),'YEAR')
+Result: '01-JAN-04'
+
+Q) Write a query to display the employees who are joining in the month December from “emp” table using to_char()? 
+
+Ans: SQL> select * from emp where to_char(HIREDATE,'MON')= 'DEC';                                     
+OR 
+SQL> select * from emp where to_char(HIREDATE,'MM')='12';                                     
+OR 
+SQL> select * from emp where to_char(HIREDATE,'MONTH')='DECEMBER'; 
+
+Q) Write a query to display the employees who are joining in the year 81 from emp table using to_char()? 
+Ans: SQL> select * from emp where to_char(hiredate,'yy')='81'; 
+
+
+
+Oracle having following date functions. 
+1. Sysdate 2. Add_months() 3. Last_day() 4. Next_day() 5. Months_between() 
+
+ADD_MONTHS ( )-->	ADD_MONTHS ('16-Sep-81', 3) - 16-Dec-81
+                    ADD_MONTHS ('16-Sep-81', -3) - 16-Jun-81
+					
+LAST_DAY( )-->	LAST_DAY ('01-Jun-08')	- 30-Jun-08
+
+NEXT_DAY()--> It returns next occurrence day from the specified date based on second parameter. 
+Eg: select next_day(sysdate,'monday')from dual; -> 23-MAR-15 
+
+MONTHS_BETWEEN( )-->	MONTHS_BETWEEN ('16-Sep-81', '16-Dec-81') -	3
+
+Q) write a query to display first date of the current month using predefined date functions sysdate, add_months(), last_date() functions. 
+Ans: SQL> select last_day((add_months(sysdate,-1)))+1 from dual;                           
+OR   
+SQL> select add_months(last_day(sysdate),-1)+1 from dual; 
+
+Oracle provided two date conversion function. They are: 1. To_char() 2. To_date()
+
+1. to_char(): It is used to convert date time into character type i.e., it converts date type into date string. 
+Eg: SQL> select to_char(sysdate,'dd/mm/yy')from dual; 
+23/03/15 
+Note: Basically “to_char” character formats are case sensitive formats. 
+Eg: SQL> select to_char(sysdate,'DAY')from dual; 
+MONDAY 
+Day-> Monday(lowercase letters) 
+
+RETURNS CHARACTER AS OUTPUT ----- DAY, DY, MONTH, MON, YEAR 
+RETURNS NUMBER AS OUTPUT ----- D, DD, DDD, MM, YY, YYYY, HH, MI, SS
+
+
+2. to_date(): It is used to convert date string into oracle “date” type(oracle date format) 
+Eg: SQL> select to_date('27/JUNE/05') from dual; 
+27-JUN-05 Eg: 
+SQL> select to_date('27/06/05') from dual; 
+Error: invalid month (or) not a valid month 
+
+Solution: SQL> select to_date('27/06/05','DD/MM/YY') from dual; 
+27-JUN-05 
+
+SQL> select to_date('09-feb-15')+5 from dual; 
+14-feb-15 
+SQL> select to_date('09-feb-15','DD-MM-YY')+5 from dual; 
+14-FEB-15 
+
+
+Q:-write query display the employee who joined in 17-nov-81 from emp table?
+
+SQL> SELECT * FROM EMP WHERE TO_CHAR(HIREDATE)='17-NOV-81';
+     EMPNO ENAME      JOB              MGR HIREDATE         SAL       COMM     DEPTNO
+---------- ---------- --------- ---------- --------- ---------- ---------- ----------
+      7839 KING       PRESIDENT            17-NOV-81       5000                    10
+
+                                 or
+
+SQL> select * from emp where to_date(hiredate)='17-nov-81';
+     EMPNO ENAME      JOB              MGR HIREDATE         SAL       COMM     DEPTNO
+---------- ---------- --------- ---------- --------- ---------- ---------- ----------
+      7839 KING       PRESIDENT            17-NOV-81       5000                    10
+	  
+
+Q:-write query display the employee who join in "sunday" from emp table?
+
+
+SQL> select * from emp where trim(to_char(hiredate,'day'))='sunday';
+
+     EMPNO ENAME      JOB              MGR HIREDATE         SAL       COMM     DEPTNO
+---------- ---------- --------- ---------- --------- ---------- ---------- ----------
+      7788 SCOTT      ANALYST         7566 19-APR-87       3000                    20
+      7521 WARD       SALESMAN        7698 22-FEB-81       1250        500         30
+(in this query "trim" is use for delete the "space" from hiredate)
+
+                                     or
+									 
+SQL> select * from emp where to_char(hiredate, 'dy')='sun';									 
+     EMPNO ENAME      JOB              MGR HIREDATE         SAL       COMM     DEPTNO
+---------- ---------- --------- ---------- --------- ---------- ---------- ----------
+      7788 SCOTT      ANALYST         7566 19-APR-87       3000                    20
+      7521 WARD       SALESMAN        7698 22-FEB-81       1250        500         30
+	  
+
+Q:- write query display the employee who joined in "1981"?
+
+SQL> select * from emp where hiredate between '01-jan-81' and '31-dec-81';
+
+                                            or
+
+SQL> select * from emp where hiredate like '%81';
+
+                                            or
+
+SQL> select * from emp where to_char(hiredate,'yy')='81';
+	  
+	                                        or
+											
+SQL> select * from emp where substr(hiredate, -2, 2)=81;											
+									
+
+First sunday of month:
+---------------------
+select next_day(trunc(sysdate, 'mon'), 'sun') from dual;
+
+All sunday's in a Year:
+-----------------------
+select  distinct next_day(trunc(sysdate, 'year')+(level-1), 'sun') from dual
+connect by level<=365;
+
+Finding last two months table:
+-----------------------------
+ SELECT * FROM DBA_OBJECTS WHERE OWNER='SYSTEM' AND OBJECT_TYPE='TABLE' 
+ AND CREATED>(ADD_MONTHS(SYSDATE,-2));	  
+ 
+Q) Write a Query to find the number of Saturdays and Sundays in a month.
+
+A- 
+select trunc(sysdate,'MONTH') from dual;
+
+select trunc(sysdate,'MONTH'), last_day(sysdate) from dual;
+
+select trunc(sysdate,'MONTH'), last_day(sysdate), trunc(last_day(sysdate)) - trunc(sysdate,'MONTH') + 1 from dual;
+
+select trunc(sysdate,'MONTH'), last_day(sysdate), trunc(last_day(sysdate)) - trunc(sysdate,'MONTH') + 1 from dual
+connect by level <= trunc(last_day(sysdate)) - trunc(sysdate,'MONTH') + 1;
+
+select trunc(sysdate,'MONTH'), last_day(sysdate), trunc(last_day(sysdate)) - trunc(sysdate,'MONTH') + 1, level-1 from dual
+connect by level <= trunc(last_day(sysdate)) - trunc(sysdate,'MONTH') + 1;   
+
+select trunc(sysdate,'MONTH')+level-1, last_day(sysdate), trunc(last_day(sysdate)) - trunc(sysdate,'MONTH') + 1, level-1 from dual
+connect by level <= trunc(last_day(sysdate)) - trunc(sysdate,'MONTH') + 1;
+
+select c_date, to_char(c_date,'DAY')/to_char(c_date,'DY')/to_char(c_date,'d') from
+(select trunc(sysdate,'MONTH')+level-1 c_date, last_day(sysdate), trunc(last_day(sysdate)) - trunc(sysdate,'MONTH') + 1, level-1 from dual
+connect by level <= trunc(last_day(sysdate)) - trunc(sysdate,'MONTH') + 1
+where to_char(c_date,'DAY') in('SATURDAY','SUNDAY')/to_char(c_date,'DY') in('SAT','SUN')/to_char(c_date,'d') in(7,1);

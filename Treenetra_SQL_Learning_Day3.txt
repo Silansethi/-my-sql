@@ -1,0 +1,181 @@
+3) DATA RETRIVAL LANGUAGE(DRL) (OR) DATA QUERY LANGUAGE(DQL):
+
+we can retrieve data from table using select statement.
+
+1. Select all cols and all rows. - select * from employee;
+2. Select all cols and particular rows. - select * from employee where empid=1;
+3. Select particular cols and all rows. - select empname, empsal from employee;
+4. Select particular cols and particular rows.
+
+select empname, empsal from employee where empid=3;
+
+CLAUSE
+--------
+SELECT
+FROM
+WHERE
+ORDER BY - By default Oracle takes ascending order.
+GROUP BY
+HAVING
+USING
+ON 
+WINDOW
+WITH 
+FOR UPDATE - PLSQL
+WHERE CURRENT OF - PLSQL
+
+ALIASING 
+--------
+Renaming the column name or table name
+
+select * from employee a where a.empid=2;
+select empid as id, empname as name , doj, empsal as sal from employee;
+
+
+Operators Used in “Select” statement: 
+------------------------------------- 
+1. Arthematic operator(+,-,*,/) 
+2. Relational operator(=,<,<=,>,>=,[<> or!=]not equal). 
+3. Logical operator (AND,OR,NOT) 
+4. Special operator(IN, BETWEEN, IS NULL, LIKE)
+5. SET OPERATORS
+6. EXISTS OPERATORS
+
+Arithmetic operator is used for “select” (eg: select column1, column2,…)
+Relational and Logical and Special operators are used for “where” (eg: where condition)
+We can also use arithmetic operators in “where” conditions.
+
+Arithmetic operators are used in number, data datatype column.
+
+Q) write a query to display ename, sal, annsal from emp table;
+Ans: SQL> select ename, sal, sal*12 annsal from emp;
+ENAME SAL ANNSAL
+-     -   -
+SMITH 700 8400
+
+Q) write a query to display the employees except job as clerk from emp table.
+Ans: select * from emp where job<>'CLERK'; {or job != 'CLERK'}
+
+Q) Write a query to display the employees who are getting more than 2000 salary from emp table?
+Ans: SQL> select * from emp where sal>2000;
+
+Example: SQL> select * from emp where job='CLERK' and sal>2000;
+
+Note: In databases if we want to retrieve multiple values within a single column then we must use “OR” operator.
+
+Example: SQL> select * from emp where job='CLERK' or job='SALESMAN';
+
+Q) write a query to display the employees who are belongs to the department numbers 20,50,70,90?
+Ans: SQL> select * from emp where deptno=20 or deptno=50 or deptno=70 or deptno=90;
+
+4. Special operators: 
+- In opposite not in
+- between opposite not between 
+- is null opposite is not null 
+- like opposite not like
+- Concatenation Operator(|| double pipe)
+
+--In operator performance is very high compared to OR operator.  
+--In all datebase systems whenever we are using multiple row sub queries then we must use “in” operator. 
+
+select * from emp where deptno in(20,30,50,70,90);
+
+Eg: select * from emp where deptno not in(10,20,null);
+Note:In all relational databases “not in” operator doesnot  work with “null” values. 
+
+Note: Null is an undefined, unavailable, unknown value. It is not same as “zero”. 
+Any arithmetic operations performed on null values again it becomes “null”. 
+
+Eg: null+50=> null.
+Q) Write a query to display ename, sal, comm, sal+comm of the employee SMITH from emp
+table.
+Ans: SQL> select ename, sal, comm, sal+comm from emp where ename=”SMITH”;
+o/p: ename sal comm. Sal+comm
+---------- ------- ----------- ----------------
+SMITH 1100 null null
+To overcome this problem oracle provided “NVL()” function.
+
+Q-----Explain three different rules that apply to NULLs when doing comparisons?
+
+NVL,NVL2,NULLIF,Coalese Function
+
+DECODE(E1, E2, E3, E4)
+----------------------
+IF E1 = E2 THEN E3 ELSE E4
+
+NVL(E1, E2)-----Here exp1,exp2 must belongs to same datatype. 
+----------
+IF E1 IS NULL THEN E2 ELSE E1
+
+Eg: 
+1) NVL(colname,30) -> 30. 
+2) NVL(sal,20000) -> 10. 
+
+NVL2(E1, E2, E3)
+----------------
+IF E1 IS NULL THEN E3 ELSE E2
+
+Eg: SQL> select nvl2(null,10,20) from dual;      20 
+    SQL> select nvl2(30,40,50) from dual;        40
+	
+NULLIF(E1, E2)
+--------------
+IF E1 = E2 THEN NULL ELSE E1
+
+Collase(e1,e2...en) -- Case Statement -- Check
+-------------------
+CASE
+WHEN e1 IS NOT NULL THEN
+  e1 
+ELSE
+  COALESCE (e2, ..., en)
+END
+
+2) Between: This operator is used to retrieve range of values. This operator is also call as
+Betweem….. And operator.
+Syntax: Select * from tablename where columnname between lowvalue and highvalue.
+Eg: select * from emp where sal between 2000 and 5000;
+Date: 14/3/15
+While using “DATE”:
+SQL> select * from emp where hiredate between ‟01-jan-1981‟ and ‟01-jan-1982‟;
+
+3) Is null, is not null: These two operators used in "where" condition only. These two
+operators are used to test weather a column having null values or not.
+Syntax: select * from tablename where columnname is null;
+Syntax: select * from tablename where columnname is not null;
+Q) write a query to display the employees who are not getting commission from emp table.
+Ans: SQL> select * from emp where comm is null;
+Q) write a query to display the employees who are getting commission from emp table?
+Ans: SQL> select * from emp where comm is not null;
+
+
+4) Like operator has 2 characters.
+% -> group of characters if want to match or string 
+_ -> single character to match.
+
+Ans: SQL> select * from emp where hiredate like '_ _ _D%'; (or) '%DEC%'; 
+Q) write a query to display the employees who are joining in the month December from the emp table using like operator. 
+ 
+Q) write a query to display the employees who are joining in the year “81” from emp table using like operator? 
+Ans: SQL> select * from emp where emp table like '%81'; 
+
+Q) write a query to display the employees whose ename start with 'S_' from emp table using 'like' operator? 
+Ans: SQL> select * from emp where ename like 'S_%'; 
+SMITH 
+SCOTT 
+S_MITH 
+Solution: 
+SQL> select * from emp where ename like 'S?_%' escape'?'; 
+S_MITH 
+
+5) Concatenation Operator(|| double pipe): 
+
+If we want to display column data along with literal strings then we must use concatenation operator. 
+Eg: select 'my employee names are'|| ename from emp; 
+
+If we want to display our own space in between the columns then also we can use
+concatenation operator.
+Eg: select ename||' '||sal from emp;
+
+
+
